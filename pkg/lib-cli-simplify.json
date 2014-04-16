@@ -1,0 +1,14 @@
+{
+    "name": "lib-cli-simplify",
+    "url": "https://pkg-repo.project-toolbox-ng.googlecode.com/git/lib-cli-simplify.phar",
+    "files": [
+        "lib/ptbCliSimplify.php"
+    ],
+    "dependencies": [
+        "core"
+    ],
+    "title": "CLI Simplify Library",
+    "description": "Simplify Library for Command Line Tools",
+    "version": 0.2,
+    "author": "Christoph Vieth <christoph@vieth.me>"
+}

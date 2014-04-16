@@ -1,0 +1,20 @@
+{
+    "name": "core",
+    "url": "https://pkg-repo.project-toolbox-ng.googlecode.com/git/core.phar",
+    "files": [
+        "cfg/.htaccess",
+        "cfg/ptbCoreConfig.php",
+        "lib/.htaccess",
+        "mdl/.htaccess",
+        "exc/.htaccess",
+        "tmp/.htaccess",
+        "pkg/.htaccess",
+        "core.php",
+        "index.php"
+    ],
+    "dependencies": [],
+    "title": "Project Toolbox Core",
+    "description": "Files and Directories for PHP Project Toolbox NG's Core",
+    "version": 0.1,
+    "author": "Christoph Vieth <christoph@vieth.me>"
+}

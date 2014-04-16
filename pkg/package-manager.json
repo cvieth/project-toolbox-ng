@@ -1,0 +1,15 @@
+{
+    "name": "package-manager",
+    "url": "https://pkg-repo.project-toolbox-ng.googlecode.com/git/package-manager.phar",
+    "files": [
+        "exc/packageManager"
+    ],
+    "dependencies": [
+        "core",
+        "lib-package-manager"
+    ],
+    "title": "Package Manager",
+    "description": "CLI Tool to manage PHP Project Toolbox NG Packages",
+    "version": 0.1,
+    "author": "Christoph Vieth <christoph@vieth.me>"
+}

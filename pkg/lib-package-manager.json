@@ -1,0 +1,15 @@
+{
+    "name": "lib-package-manager",
+    "url": "https://pkg-repo.project-toolbox-ng.googlecode.com/git/lib-package-manager.phar",
+    "files": [
+        "lib/ptbPackageManager.php",
+        "cfg/ptbPackageConfig.php"
+    ],
+    "dependencies": [
+        "core"
+    ],
+    "title": "Package Manager Library",
+    "description": "Librarys needed for Manager Builder",
+    "version": 0.1,
+    "author": "Christoph Vieth <christoph@vieth.me>"
+}

@@ -1,0 +1,118 @@
+#!/usr/bin/php
+<?php
+/**
+ * PHP Project Toolbox NG - Package Manager
+ *
+ * @author Christoph Vieth <christoph@vieth.me>
+ * @license The MIT License (MIT)
+ * @version 0.1
+ */
+
+// Load PHP Project Toolbox Core
+require_once('core.php');
+
+// Load needed librarys
+require_once(ptbCoreConfig::pathRoot . ptbCoreConfig::pathLibrary . 'ptbCliSimplify.php');
+require_once(ptbCoreConfig::pathRoot . ptbCoreConfig::pathLibrary . 'ptbPackageManager.php');
+
+function showHelp()
+{
+    echo 'Available Commands:' . "\n";
+    echo '' . "\n";
+    echo ' help   - Shows this help' . "\n";
+    echo ' update - Update package lists' . "\n";
+    echo '' . "\n";
+}
+
+function update()
+{
+    ptbCliSimplify::printMessage('Reading Configuration ...');
+    ptbCliSimplify::printNotice('Found ' . ptbPackageManager::getNumRepositories() . ' Repositories!');
+    if (ptbPackageManager::getNumRepositories() > 0) {
+        ptbCliSimplify::printMessage('Fetching packet lists ...');
+        ptbPackageManager::fetchPackageLists();
+        ptbCliSimplify::printMessage('Download successful!');
+        ptbCliSimplify::printNotice('Now ' . ptbPackageManager::getNumAvailablePackets() . ' packets available!');
+        return true;
+    } else {
+        ptbCliSimplify::printError('No repository found!');
+        return false;
+    }
+}
+
+ptbCliSimplify::printBanner('Project Toolbox NG - Package Manager');
+
+if (count($argv) > 1) {
+    switch ($argv[1]) {
+        case 'help':
+            showHelp();
+            break;
+        /*
+         * Update package
+         */
+        case 'update':
+            update();
+            break;
+        /*
+         * List available Packages
+         */
+        case 'list':
+            if (ptbPackageManager::cacheIsAvailable()) {
+                $packageOverview = ptbPackageManager::getPackageOverview();
+                if (($packageOverview != false) && (is_array($packageOverview)) && (count($packageOverview) > 0)) {
+                    echo 'List of Packages:' . "\n";
+                    foreach ($packageOverview as $pkgName => $fullName) {
+                        echo $pkgName . "\t" . ' - ' . "\t" . $fullName . "\n";
+                    }
+                } else {
+                    echo 'No Packets available!' . "\n";
+                    echo 'Try "' . $argv[0] . ' update" to update packet list.' . "\n";
+                }
+            } else {
+                echo 'No Packets available!' . "\n";
+                echo 'Try "' . $argv[0] . ' update" to update packet list.' . "\n";
+            }
+            break;
+
+        /*
+         * Install a package
+         */
+        case 'install':
+            if (isset($argv[2])) {
+
+                if (ptbPackageManager::packageIsAvailable($argv[2])) {
+                    ptbCliSimplify::printMessage('Calculating dependencies ...');
+
+                    $neededPackages = ptbPackageManager::getPackageDependencies($argv[2]);
+                    array_push($neededPackages, $argv[2]);
+                    ptbCliSimplify::printMessage('Packages needed: ' . implode(", ", $neededPackages));
+
+                    foreach ($neededPackages as $package) {
+                        if (!ptbPackageManager::packageIsInstalled($package)) {
+                            ptbCliSimplify::printMessage('Installing package "' . $package . '"');
+                            ptbCliSimplify::printMessage('Downloading package ...');
+                            if (ptbPackageManager::packageDownload($package)) {
+                                ptbCliSimplify::printMessage('Extracting files ...');
+                                ptbPackageManager::packageExtract(ptbCoreConfig::pathRoot . ptbCoreConfig::pathTemporary . $package . '.phar', ptbCoreConfig::pathRoot);
+                            } else
+                                ptbCliSimplify::printError('Could not download package "' . $argv[2] . '".');
+                        } else {
+                            ptbCliSimplify::printNotice('Package "' . $package . '" is already installed!');
+                        }
+                    }
+                } else
+                    ptbCliSimplify::printError('Could not found package "' . $argv[2] . '".');
+            } else {
+                echo 'Use "' . $argv[0] . ' install [package]" to install a package.' . ptbCliSimplify::newline;
+            }
+            break;
+
+        default:
+            ptbCliSimplify::printError('Command not found!');
+            ptbCliSimplify::printNotice('Try "' . $argv[0] . ' help" for a list of commands.');
+            break;
+    }
+} else {
+    ptbCliSimplify::printError('Command missing!');
+    ptbCliSimplify::printNotice('Try "' . $argv[0] . ' help" for a list of commands.');
+}
